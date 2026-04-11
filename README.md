@@ -21,7 +21,7 @@ Give it a SoundCloud URL and it downloads the mix, samples it at regular interva
 ## Installation
 
 ```bash
-git clone https://github.com/yourname/shazaming
+git clone https://github.com/s-howe/shazaming
 cd shazaming
 uv sync
 ```
