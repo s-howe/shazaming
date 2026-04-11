@@ -4,14 +4,6 @@ Automatically identify tracks in a SoundCloud mix using Shazam.
 
 Give it a SoundCloud URL and it downloads the mix, samples it at regular intervals, and builds a timestamped tracklist by fingerprinting each chunk against the Shazam API.
 
-```
-[06:00] Mikaya Behailu - Sebeb
-[12:00] David Guetta - Without You (feat. Usher)
-[46:00] The Blackout Allstars - I Like It (Like That)
-[50:00] Erik Hagleton - Ain't Nobody
-[56:00] Rmp_sa - Garden of Eden
-```
-
 ## Requirements
 
 - Python 3.12+
@@ -33,7 +25,7 @@ uv run shazaming <soundcloud-url>
 ```
 
 ```bash
-uv run shazaming https://soundcloud.com/sextapesfrommars/flying-saucer-fm-w-enchanted-rhythms
+uv run shazaming https://soundcloud.com/awkscl/awkwardly-cast-063-ecki-pirates
 ```
 
 ## Options
