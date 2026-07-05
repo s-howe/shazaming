@@ -76,13 +76,24 @@ async def recognize_chunk(
     shazam: Shazam,
     chunk: AudioSegment,
     offset_sec: int,
-    tmp_path: str = "/tmp/chunk.mp3",
+    tmp_path: str,
 ):
     """Export chunk to tmp file and send to Shazam."""
     with _suppress_stderr():
         chunk.export(tmp_path, format="mp3")
         result = await shazam.recognize(tmp_path)
     return result
+
+
+def format_tracklist(results: list[dict]) -> str:
+    """Render a deduplicated tracklist as human-readable text."""
+    lines = ["--- TRACKLIST ---"]
+    seen = set()
+    for r in results:
+        if r.get("title") and r["title"] not in seen:
+            seen.add(r["title"])
+            lines.append(f"[{r['timestamp']}] {r['artist']} - {r['title']}")
+    return "\n".join(lines)
 
 
 def format_timestamp(seconds: int) -> str:
@@ -120,6 +131,7 @@ async def main(
     shazam = Shazam()
     results = []
     seen_titles = set()
+    tmp_chunk_path = str(Path(mp3_path).with_name("chunk.mp3"))
 
     for offset_sec, chunk in slice_mix(
         mp3_path, chunk_every_minutes=interval, chunk_duration_ms=duration * 1000
@@ -128,7 +140,7 @@ async def main(
         logger.debug(f"[{ts}] Recognizing...")
 
         try:
-            result = await recognize_chunk(shazam, chunk, offset_sec)
+            result = await recognize_chunk(shazam, chunk, offset_sec, tmp_chunk_path)
             info = extract_track_info(result)
         except Exception as e:
             logger.error(f"[{ts}] ERROR: {e}")
@@ -158,10 +170,6 @@ async def main(
         json.dump(results, f, indent=2, ensure_ascii=False)
     logger.info(f"Done. Results saved to {output}")
 
-    # Print deduplicated tracklist
-    print("\n--- TRACKLIST ---")
-    seen = set()
-    for r in results:
-        if r.get("title") and r["title"] not in seen:
-            seen.add(r["title"])
-            print(f"[{r['timestamp']}] {r['artist']} - {r['title']}")
+    print(f"\n{format_tracklist(results)}")
+
+    return results

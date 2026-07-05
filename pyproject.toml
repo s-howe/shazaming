@@ -9,10 +9,13 @@ dependencies = [
     "pydub>=0.25.1",
     "shazamio>=0.8.1",
     "yt-dlp>=2026.3.17",
+    "python-telegram-bot>=21.0",
+    "python-dotenv>=1.0.1",
 ]
 
 [project.scripts]
 shazaming = "main:main"
+shazaming-bot = "bot:main"
 
 [build-system]
 requires = ["hatchling"]
