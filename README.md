@@ -57,6 +57,65 @@ runs/
 - Increasing the **sample duration** (`-d 25`) gives Shazam more signal on harder-to-identify tracks.
 - Use `-v` to see every chunk result in the terminal while it runs.
 
+## Telegram bot
+
+A single-user Telegram frontend is included in `bot.py`: send it a SoundCloud URL and it replies with the tracklist once the job finishes.
+
+### Setup
+
+1. Message [@BotFather](https://t.me/BotFather) on Telegram, run `/newbot`, and copy the bot token it gives you.
+2. Message [@userinfobot](https://t.me/userinfobot) to get your own numeric Telegram user ID.
+3. Create a `.env` file in the repo root (not committed):
+
+   ```
+   TELEGRAM_BOT_TOKEN=123456789:your-token-from-botfather
+   TELEGRAM_OWNER_ID=your-numeric-telegram-id
+   ```
+
+4. `uv sync` to install the bot's dependencies.
+
+### Running
+
+```bash
+uv run shazaming-bot
+```
+
+Only messages from `TELEGRAM_OWNER_ID` are processed; everyone else is silently ignored. Jobs run one at a time — sending a new URL while one is in progress gets a "busy" reply. Each job writes to `runs/` exactly like the CLI.
+
+### Running as a service (systemd)
+
+Create `/etc/systemd/system/shazaming-bot.service`:
+
+```ini
+[Unit]
+Description=Shazaming Telegram Bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=<your-user>
+Group=<your-user>
+WorkingDirectory=/home/<your-user>/shazaming
+EnvironmentFile=/home/<your-user>/shazaming/.env
+ExecStart=/home/<your-user>/.local/bin/uv run bot.py
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Then:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now shazaming-bot
+sudo systemctl status shazaming-bot
+```
+
 ## License
 
 MIT
