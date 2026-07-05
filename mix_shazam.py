@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-mix_shazam.py — Download a SoundCloud mix and identify tracks via Shazam
+mix_shazam.py — Download a SoundCloud or YouTube mix and identify tracks via Shazam
 
 Dependencies:
     pip install shazamio yt-dlp pydub
@@ -37,7 +37,7 @@ def _suppress_stderr():
 
 
 def download_mix(url: str, output_path: str = "mix.mp3") -> str:
-    """Download SoundCloud URL to mp3 via yt-dlp."""
+    """Download a SoundCloud or YouTube URL to mp3 via yt-dlp."""
     cmd = [
         "yt-dlp",
         "--extract-audio",

@@ -1,7 +1,7 @@
 [project]
 name = "shazaming"
 version = "0.1.0"
-description = "Automatically identify tracks in a SoundCloud mix using Shazam"
+description = "Automatically identify tracks in a SoundCloud or YouTube mix using Shazam"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.12"
