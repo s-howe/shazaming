@@ -2,7 +2,7 @@
 """
 bot.py — Telegram frontend for shazaming
 
-A single-user bot: paste a SoundCloud URL, get a tracklist back.
+A single-user bot: paste a SoundCloud or YouTube URL, get a tracklist back.
 
 Dependencies:
     uv sync  (adds python-telegram-bot, python-dotenv)
@@ -37,8 +37,12 @@ logger = logging.getLogger(__name__)
 job_lock = asyncio.Lock()
 
 
+ALLOWED_HOSTS = ("soundcloud.com", "youtube.com", "youtu.be")
+
+
 def is_probably_url(text: str) -> bool:
-    return text.strip().lower().startswith(("http://", "https://")) and "soundcloud.com" in text.lower()
+    text = text.strip().lower()
+    return text.startswith(("http://", "https://")) and any(h in text for h in ALLOWED_HOSTS)
 
 
 async def send_long_message(chat_id: int, text: str, context: ContextTypes.DEFAULT_TYPE):
@@ -105,7 +109,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = (update.message.text or "").strip()
     if not is_probably_url(url):
         await update.message.reply_text(
-            "Send me a SoundCloud mix URL and I'll identify the tracks."
+            "Send me a SoundCloud or YouTube mix URL and I'll identify the tracks."
         )
         return
 

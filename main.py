@@ -3,23 +3,28 @@ import asyncio
 import logging
 from datetime import datetime
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 from mix_shazam import main as shazam_main
 
 
 def slug_from_url(url: str) -> str:
-    """Extract the last path segment from a URL as a filename-safe slug."""
-    path = urlparse(url).path.rstrip("/")
+    """Extract a filename-safe slug from a URL (video ID for YouTube, last path segment otherwise)."""
+    parsed = urlparse(url)
+    if "youtube.com" in parsed.netloc:
+        video_id = parse_qs(parsed.query).get("v", [None])[0]
+        if video_id:
+            return video_id
+    path = parsed.path.rstrip("/")
     return path.split("/")[-1] or "mix"
 
 
 def main():
     parser = argparse.ArgumentParser(
         prog="shazaming",
-        description="Identify tracks in a SoundCloud mix using Shazam",
+        description="Identify tracks in a SoundCloud or YouTube mix using Shazam",
     )
-    parser.add_argument("url", help="SoundCloud mix URL")
+    parser.add_argument("url", help="mix URL (SoundCloud or YouTube)")
     parser.add_argument(
         "-i", "--interval", type=int, default=1,
         help="minutes between samples (default: 1)",

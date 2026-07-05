@@ -1,8 +1,8 @@
 # shazaming
 
-Automatically identify tracks in a SoundCloud mix using Shazam.
+Automatically identify tracks in a SoundCloud or YouTube mix using Shazam.
 
-Give it a SoundCloud URL and it downloads the mix, samples it at regular intervals, and builds a timestamped tracklist by fingerprinting each chunk against the Shazam API.
+Give it a SoundCloud or YouTube URL and it downloads the mix, samples it at regular intervals, and builds a timestamped tracklist by fingerprinting each chunk against the Shazam API.
 
 ## Requirements
 
@@ -21,11 +21,12 @@ uv sync
 ## Usage
 
 ```bash
-uv run shazaming <soundcloud-url>
+uv run shazaming <soundcloud-or-youtube-url>
 ```
 
 ```bash
 uv run shazaming https://soundcloud.com/awkscl/awkwardly-cast-063-ecki-pirates
+uv run shazaming https://www.youtube.com/watch?v=dQw4w9WgXcQ
 ```
 
 ## Options
@@ -59,7 +60,7 @@ runs/
 
 ## Telegram bot
 
-A single-user Telegram frontend is included in `bot.py`: send it a SoundCloud URL and it replies with the tracklist once the job finishes.
+A single-user Telegram frontend is included in `bot.py`: send it a SoundCloud or YouTube URL and it replies with the tracklist once the job finishes.
 
 ### Setup
 
