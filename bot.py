@@ -96,6 +96,8 @@ async def run_job(url: str, update: Update, context: ContextTypes.DEFAULT_TYPE):
     finally:
         root_logger.removeHandler(file_handler)
         file_handler.close()
+        for leftover in (*out_dir.glob("mix.*"), out_dir / "chunk.mp3"):
+            leftover.unlink(missing_ok=True)
 
     await send_long_message(chat_id, format_tracklist(results), context)
     await update.message.reply_text(f"Done. Saved to {out_dir}")
